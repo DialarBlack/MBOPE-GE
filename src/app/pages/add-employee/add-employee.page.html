@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Add Employee</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="employeeForm" (ngSubmit)="addEmployee()">
+    <ion-item>
+      <ion-label position="floating">First Name</ion-label>
+      <ion-input type="text" formControlName="firstName" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Last Name</ion-label>
+      <ion-input type="text" formControlName="lastName" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Username</ion-label>
+      <ion-input type="text" [formControlName="username" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Email</ion-label>
+      <ion-input type="email" formControlName="email" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Contact</ion-label>
+      <ion-input type="text" formControlName="contact" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Address</ion-label>
+      <ion-input type="text" formControlName="address" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Sex</ion-label>
+      <ion-input type="text" formControlName="sex" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Department</ion-label>
+      <ion-select formControlName="department" required>
+        <ion-select-option *ngFor="let department of departments" [value]="department.id">{{ department.role_name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-button expand="full" type="submit">Add Employee</ion-button>
+  </form>
+</ion-content>

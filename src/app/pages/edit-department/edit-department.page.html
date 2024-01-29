@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Edit Department</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="departmentForm" (ngSubmit)="editDepartment()">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">Department Name</ion-label>
+        <ion-input value="{{department.role_name}}" id="role_name" type="text"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Description</ion-label>
+        <ion-input value="{{department.description}}" id="description" type="text"></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button expand="full" type="submit">Save</ion-button>
+  </form>
+</ion-content>

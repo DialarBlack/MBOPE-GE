@@ -1,0 +1,50 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Add Task</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="taskForm" (ngSubmit)="addTask()">
+    <ion-item>
+      <ion-label position="floating">Title</ion-label>
+      <ion-input type="text" formControlName="title" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Description</ion-label>
+      <ion-textarea formControlName="description" required></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Status</ion-label>
+      <ion-select formControlName="status" required>
+        <ion-select-option value="Pending">Pending</ion-select-option>
+        <ion-select-option value="In Progress">In Progress</ion-select-option>
+        <ion-select-option value="Completed">Completed</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Start Date</ion-label>
+      <ion-input type="date" formControlName="startDate" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">End Date</ion-label>
+      <ion-input type="date" formControlName="endDate" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Employee</ion-label>
+      <ion-select formControlName="employee" required>
+        <ion-select-option *ngFor="let employee of employees" [value]="employee.id">{{ employee.first_name }} {{ employee.last_name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-button expand="full" type="submit">Add Task</ion-button>
+  </form>
+</ion-content>

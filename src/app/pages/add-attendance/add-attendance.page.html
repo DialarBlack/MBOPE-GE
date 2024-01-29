@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Add Attendance Record</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="attendanceForm" (ngSubmit)="addAttendanceRecord()">
+    <ion-item>
+      <ion-label position="floating">Employee Name</ion-label>
+      <ion-select formControlName="employeeName" required>
+        <ion-select-option *ngFor="let employee of employees" [value]="employee.id">{{ employee.first_name }} {{ employee.last_name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Date</ion-label>
+      <ion-input type="date" formControlName="date" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Arriving Time</ion-label>
+      <ion-input type="time" formControlName="arrivingTime" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Start Break Time</ion-label>
+      <ion-input type="time" formControlName="startBreakTime"required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">End Break Time</ion-label>
+      <ion-input type="time" formControlName="endBreakTime" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Leaving Time</ion-label>
+      <ion-input type="time" formControlName="leavingTime" required></ion-input>
+    </ion-item>
+
+    <ion-button expand="full" type="submit">Add Attendance Record</ion-button>
+  </form>
+</ion-content>

@@ -1,0 +1,30 @@
+<ion-content>
+  <div class="flex-center">
+    <ion-card>
+      <ion-card-header>
+        <div class="flex-center">
+          <img alt="Silhouette of mountains" src="../assets/icon/mbope logo.jpg" height="100" />
+          <ion-card-title color="dark-blue">MBOPE GE</ion-card-title>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup] ="form">
+        <ion-item>
+          <ion-label position="floating">Email</ion-label>
+          <ion-input type="text" formControlName="email"></ion-input>
+        </ion-item>
+        <ion-label color="danger" *ngif="form.get('email').touched && form.get('email').errors?.email">Email is invalid</ion-label>
+        <ion-item>
+          <ion-label position="floating">Password</ion-label>
+          <ion-input type="password" formControlName="password"></ion-input>
+        </ion-item>
+        <ion-label color="danger" *ngif="form.get('email').touched && form.get('password').errors?.required">Password is mandatory</ion-label>
+        <ion-button color="dark" fill="clear" size="full">Forgot email/password ?</ion-button>
+        <ion-button color="success" size="full" [disabled]="!form.valid" (click)="login()">Login</ion-button>
+        <ion-button color="success" size="full" fill="clear" (click)="register()">Register</ion-button>
+      </form>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

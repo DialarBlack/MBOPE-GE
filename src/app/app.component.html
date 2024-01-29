@@ -3,23 +3,65 @@
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
-          <ion-list-header>Inbox</ion-list-header>
-          <ion-note>hi&#64;ionicframework.com</ion-note>
+          <ion-item lines="none" routerDirection="root" routerLink="/">
+          <ion-avatar slot="start">
+            <img alt="Silhouette of a person's head" src="../assets/icon/mbope logo.jpg" />
+          </ion-avatar>
+          <ion-label>MBOPE GE</ion-label>
+          </ion-item>
+          <ion-note>Mbope Employee Management System</ion-note>
 
-          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
-              <ion-icon aria-hidden="true" slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
-              <ion-label>{{ p.title }}</ion-label>
+          <ion-item-group>
+            <ion-item-divider>
+              <ion-icon slot="start" name="folder-open-outline"></ion-icon>
+              Manage
+            </ion-item-divider>
+            <ion-item lines="none" routerDirection="root" routerLink="/users">
+              <ion-icon slot="start" name="person-circle-outline"></ion-icon>
+              Users
             </ion-item>
-          </ion-menu-toggle>
-        </ion-list>
-
-        <ion-list id="labels-list">
-          <ion-list-header>Labels</ion-list-header>
-
-          <ion-item *ngFor="let label of labels" lines="none">
-            <ion-icon aria-hidden="true" slot="start" ios="bookmark-outline" md="bookmark-sharp"></ion-icon>
-            <ion-label>{{ label }}</ion-label>
+            <ion-item lines="none" routerDirection="root" routerLink="/employees">
+              <ion-icon slot="start" name="people-outline"></ion-icon>
+              Employees
+            </ion-item>
+            <ion-item lines="none" routerDirection="root" routerLink="/tasks">
+              <ion-icon slot="start" name="clipboard-outline"></ion-icon>
+              Tasks
+            </ion-item>
+            <ion-item lines="none" routerDirection="root" routerLink="/attendance">
+              <ion-icon slot="start" name="time-outline"></ion-icon>
+              Attendance
+            </ion-item>
+            <ion-item lines="none" routerDirection="root" routerLink="/departments">
+              <ion-icon slot="start" name="business-outline"></ion-icon>
+              Department
+            </ion-item>
+          </ion-item-group>
+          <ion-item-group>
+            <ion-item-divider>
+              <ion-icon slot="start" name="settings-outline"></ion-icon>
+              Settings
+            </ion-item-divider>
+            <ion-item lines="none" routerDirection="root" routerLink="/personal-information">
+              <ion-icon slot="start" name="person-outline"></ion-icon>
+              Personal Information
+            </ion-item>
+            <ion-item lines="none" routerDirection="root" routerLink="/account-settings">
+              <ion-icon slot="start" name="key-outline"></ion-icon>
+              Account Settings
+            </ion-item>
+            <ion-item lines="none" routerDirection="root" routerLink="/notifications">
+              <ion-icon slot="start" name="notifications-outline"></ion-icon>
+              Notification
+            </ion-item>
+            <ion-item lines="none" routerDirection="root" routerLink="/permission">
+              <ion-icon slot="start" name="lock-closed-outline"></ion-icon>
+              Permission
+            </ion-item>
+          </ion-item-group>
+          <ion-item lines="none" button (click)="logout()">
+            <ion-icon slot="start" name="log-out-outline"></ion-icon>
+            Logout
           </ion-item>
         </ion-list>
       </ion-content>

@@ -1,0 +1,66 @@
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Home</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <!-- Welcome section -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Welcome to MBOPE GE</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        This is your one-stop solution for managing employees.
+      </ion-card-content>
+      <ion-button expand="full" (click)="goToApp()">Get Started</ion-button>
+    </ion-card>
+
+    <!-- Feature highlights section -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Key Features</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item lines="none" routerDirection="root" routerLink="/users">
+            <ion-icon slot="start" name="person-outline"></ion-icon>
+            <ion-label>User Management</ion-label>
+            </ion-item>
+            <ion-item lines="none" routerDirection="root" routerLink="/tasks">
+              <ion-icon slot="start" name="clipboard-outline"></ion-icon>
+              <ion-label>Task Management</ion-label>
+            </ion-item>
+            <ion-item lines="none" routerDirection="root" routerLink="/attendance">
+              <ion-icon slot="start" name="time-outline"></ion-icon>
+              <ion-label>Attendance Tracking</ion-label>
+            </ion-item>
+            <!-- Add more items as needed -->
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Recent activity section -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Recent Activities</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item lines="none">
+            <ion-icon slot="start" name="calendar-number-outline"></ion-icon>
+            <ion-label>John Doe created a new task</ion-label>
+          </ion-item>
+          <ion-item lines="none">
+            <ion-icon slot="start" name="calendar-number-outline"></ion-icon>
+            <ion-label>Jane Smith completed a task</ion-label>
+          </ion-item>
+          <!-- Add more items as needed -->
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </ion-content>
+</div>
