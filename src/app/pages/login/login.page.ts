@@ -1,10 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router'
-import { LoginPageForm } from "./login.page.form";
-import { FormGroup } from '@angular/forms';
-import { MenuController } from '@ionic/angular';
-
+// login.page.ts
+import { Component , OnInit} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+import {  MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -12,29 +10,28 @@ import { MenuController } from '@ionic/angular';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
+  username: string;
+  password: string;
 
-  form: FormGroup;
-
-  constructor(private router: Router, private formBuilder: FormBuilder,public menuCtrl: MenuController) { 
-    this.form = new LoginPageForm(this.formBuilder).createForm(); 
+  constructor(private router: Router, private authService: AuthService, private menuCtrl: MenuController, private route: ActivatedRoute) {
+    this.username = '';
+    this.password = '';
   }
 
-  ionViewWillEnter() {
-    this.menuCtrl.enable(false);
- }
-
- ionViewDidLeave() {
-    this.menuCtrl.enable(true);
- }
-
-  ngOnInit() { 
-    
-  }
-  login(){
-    this.router.navigate(['home']);
-  }
-  register(){
-    this.router.navigate(['register']);
+  ngOnInit() {
+      this.menuCtrl.enable(false); // Disable the menu
   }
 
+  login() {
+    this.authService.login({ username: this.username, password: this.password }).subscribe({
+      next: (response) => {
+        // Successful login, redirect to home page or dashboard
+        this.router.navigateByUrl('/home');
+      },
+      error: (error) => {
+        // Handle error, such as displaying a message to the user
+        console.error('Login failed', error);
+      }
+    });
+  }
 }

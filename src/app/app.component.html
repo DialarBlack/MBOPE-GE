@@ -1,9 +1,9 @@
 <ion-app>
   <ion-split-pane contentId="main-content">
-    <ion-menu contentId="main-content" type="overlay">
+    <ion-menu swipeGesture="false"  contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
-          <ion-item lines="none" routerDirection="root" routerLink="/">
+          <ion-item lines="none" routerDirection="root" routerLink="/home">
           <ion-avatar slot="start">
             <img alt="Silhouette of a person's head" src="../assets/icon/mbope logo.jpg" />
           </ion-avatar>
@@ -16,6 +16,10 @@
               <ion-icon slot="start" name="folder-open-outline"></ion-icon>
               Manage
             </ion-item-divider>
+            <ion-item lines="none" routerDirection="root" routerLink="/projects">
+              <ion-icon slot="start" name="folder-outline"></ion-icon>
+              Projects
+            </ion-item>
             <ion-item lines="none" routerDirection="root" routerLink="/users">
               <ion-icon slot="start" name="person-circle-outline"></ion-icon>
               Users
@@ -59,9 +63,9 @@
               Permission
             </ion-item>
           </ion-item-group>
-          <ion-item lines="none" button (click)="logout()">
+          <ion-item routerDirection="root" routerLink="/logout">
             <ion-icon slot="start" name="log-out-outline"></ion-icon>
-            Logout
+            <ion-label>Logout</ion-label>
           </ion-item>
         </ion-list>
       </ion-content>

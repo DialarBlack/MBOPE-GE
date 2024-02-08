@@ -1,6 +1,34 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
+import { firstValueFrom } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { ModalController } from '@ionic/angular';
+import { EditTaskPage } from '../edit-task/edit-task.page';
+import { AddTaskPage } from '../add-task/add-task.page';
+import { EditAttendancePage } from '../edit-attendance/edit-attendance.page';
+import { AddAttendancePage } from '../add-attendance/add-attendance.page';
+import {  MenuController } from '@ionic/angular';
+
+interface Attendance {
+  id: number;
+  date: string;
+  employee: string;
+  attendance_type:string;
+  date_time: string
+}
+
+interface Employee {
+  id: number;
+  first_name: string;
+  last_name: string;
+  contact: string;
+  address: string,
+  sex: string,
+  department: number,
+  user: number
+}
 
 @Component({
   selector: 'app-attendance',
@@ -9,47 +37,82 @@ import { AlertController, ToastController } from '@ionic/angular';
 })
 export class AttendancePage implements OnInit {
 
-  attendance = [
-    { id: 1, employee_name: 'John Doe', date: '2024-01-28', arriving_time: '09:00', start_break_time: '12:00', end_break_time: '13:00', leaving_time: '17:00' },
-    { id: 2, employee_name: 'Jane Smith', date: '2024-01-28', arriving_time: '09:30', start_break_time: '12:30', end_break_time: '13:30', leaving_time: '17:30' },
-    { id: 3, employee_name: 'David Johnson', date: '2024-01-28', arriving_time: '08:45', start_break_time: '12:15', end_break_time: '13:15', leaving_time: '16:45' },
-    { id: 4, employee_name: 'Emily Davis', date: '2024-01-28', arriving_time: '09:15', start_break_time: '12:45', end_break_time: '13:45', leaving_time: '17:15' },
-    { id: 5, employee_name: 'Michael Wilson', date: '2024-01-28', arriving_time: '09:10', start_break_time: '12:20', end_break_time: '13:20', leaving_time: '17:10' }
-  ];
-  
-  filteredAttendanceRecords = this.attendance;
-  searchTerm = '';
+  attendances: any;
+  searchQuery = "";
+  filteredAttendances: any[]= [];
+  showSuccessMessage: boolean = false;
+  employees: any;
+  emp: any;
 
 
-  constructor(private router: Router, public alertController: AlertController,  public toastController: ToastController) { }
+
+  constructor(private menuCtrl: MenuController, private modalController: ModalController, private router: Router, public alertController: AlertController,  public toastController: ToastController, private http: HttpClient) {
+    this.http.get('https://dialarblack.pythonanywhere.com/attendance/').subscribe(response => {
+      this.attendances = response
+      this.filteredAttendances = this.attendances;
+    });
+    this.http.get('https://dialarblack.pythonanywhere.com/employees/').subscribe(response => {
+      this.employees = response
+    });
+   }
 
   ngOnInit() {
+    this.menuCtrl.enable(true);
   }
-  filterAttendance() {
-    if (this.searchTerm.trim() !== '') {
-      this.filteredAttendanceRecords = this.attendance.filter(record =>
-        record.employee_name.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    } else {
-      this.filteredAttendanceRecords = this.attendance;
+
+  getEmployeeName(employeeId: number): string {
+    const employee = this.employees.find((emp: Employee)  => emp.id === employeeId);
+    if (employee) {
+      return `${employee.first_name} ${employee.last_name}`;
     }
+    return '';
   }
 
-  editAttendance() {
-    // Handle the edit functionality here
-    console.log('Editing attendance record');
-    this.router.navigate(['/edit-attendance']);
+  filterAttendance() {
+    const query = this.searchQuery.toLowerCase().trim();
+  
+    if (!query) {
+      this.filteredAttendances = this.attendances; // Reset filter if search query is empty
+      return;
+    }
+  
+    this.filteredAttendances = this.attendances.filter(
+      (attendance: Attendance) => {
+        const employeeName = this.getEmployeeName(Number(attendance.employee));
+        return (
+          attendance.date.toLowerCase().includes(query) ||
+          attendance.attendance_type.toLowerCase().includes(query) ||
+          employeeName.toLowerCase().includes(query)
+        );
+      }
+    );
+  }
+  async editAttendance(index: number) {
+
+    const modal = await this.modalController.create({
+      component: EditAttendancePage,
+      componentProps: {
+        attendance: this.filteredAttendances[index]
+      },
+      keyboardClose: true,
+      backdropDismiss: true
+    });
+
+    return await modal.present();
   }
 
-  addAttendance() {
-    // Handle the add functionality here
-    console.log('Adding a new attendance record');
-    this.router.navigate(['/add-attendance']);
+  async addAttendance() {
+    const modal = await this.modalController.create({
+      component: AddAttendancePage,
+      keyboardClose: true,
+      backdropDismiss: true
+    });
+    return await modal.present();
   }
-  async deleteItem(index: number) {
+  async deleteItem(attendanceId: number) {
     const alert = await this.alertController.create({
        header: 'Confirm delete',
-       message: 'Are you sure you want to delete this task?',
+       message: 'Are you sure you want to delete this attendance?',
        buttons: [{
          text: 'Cancel',
          role: 'cancel',
@@ -59,8 +122,14 @@ export class AttendancePage implements OnInit {
        }, {
          text: 'Delete',
          handler: () => {
-           this.attendance.splice(index, 1);
-           this.showToast('Attendance deleted successfully');
+          this.http.delete('https://dialarblack.pythonanywhere.com/attendance/' + attendanceId)
+          .subscribe({
+            next: () => {
+              this.showToast('Attendance deleted successfully');
+              // Redirect to the desired page after deletion
+              this.router.navigate(['/attendance']);
+            }
+          });
          }
        }]
     });

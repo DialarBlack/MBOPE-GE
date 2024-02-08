@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
+import {  MenuController } from '@ionic/angular';
 @Component({
   selector: 'app-add-attendance',
   templateUrl: './add-attendance.page.html',
@@ -8,46 +11,56 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class AddAttendancePage implements OnInit {
   attendanceForm: FormGroup;
-  employees = [
-    { id: 1, first_name: 'John', last_name: 'Doe', username: '@john.doe', email: 'john@example.com', contact: '+123456789', address: '123 Main St', sex: 'Male', department: 'Sales' },
-    { id: 2, first_name: 'Jane', last_name: 'Smith', username: '@jane.smith', email: 'jane@example.com', contact: '+987654321', address: '456 Elm St', sex: 'Female', department: 'Human Resources' },
-    { id: 3, first_name: 'David', last_name: 'Johnson', username: '@david.johnson', email: 'david@example.com', contact: '+456789123', address: '789 Oak St', sex: 'Male', department: 'IT' },
-    { id: 4, first_name: 'Emily', last_name: 'Davis', username: '@emily.davis', email: 'emily@example.com', contact: '+321987654', address: '987 Pine St', sex: 'Female', department: 'Marketing' },
-    { id: 5, first_name: 'Michael', last_name: 'Wilson', username: '@michael.wilson', email: 'michael@example.com', contact: '+654321987', address: '654 Cedar St', sex: 'Male', department: 'Finance' }
-  ];
+  employees : any
+  date="";
+  employee="";
+  attendance_type="";
+  date_time="";
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private menuCtrl: MenuController, private modalController: ModalController,private router: Router, private formBuilder: FormBuilder, private http: HttpClient) {
+
+    this.http.get('https://dialarblack.pythonanywhere.com/employees/').subscribe(response => {
+      this.employees = response
+    });
+
     this.attendanceForm = this.formBuilder.group({
-      employeeName: ['', Validators.required],
+      employee: ['', Validators.required],
       date: ['', Validators.required],
-      arrivingTime: ['', Validators.required],
-      startBreakTime: [''],
-      endBreakTime: [''],
-      leavingTime: ['', Validators.required],
+      attendance_type: ['', Validators.required],
+      date_time: ['', Validators.required],
     });
   }
 
   ngOnInit() {
+    this.menuCtrl.enable(true);
   }
   get attendanceFormControls() {
     return this.attendanceForm.controls;
   }
 
   addAttendanceRecord() {
-    if (this.attendanceForm.invalid) {
-      return;
+    const attendanceData={
+      date:this.date,
+      employee:this.employee,
+      attendance_type:this.attendance_type,
+      date_time:this.date_time,
     }
+    return this.http.post('https://dialarblack.pythonanywhere.com/attendance/', attendanceData).subscribe({
+      next: (response) => {
+        console.log(response);
+        alert('Attendance record added successfully.'); // Display success message
+        this.router.navigate(['/attendance']); // Navigate to the list of employees
+        // Handle success
+      },
+      error: (error) => {
+        console.log(error);
+        // Handle error
+      }
+    });
+}
 
-    const attendanceRecord = {
-      employeeName: this.attendanceFormControls['employeeName'].value,
-      date: this.attendanceFormControls['date'].value,
-      arrivingTime: this.attendanceFormControls['arrivingTime'].value,
-      startBreakTime: this.attendanceFormControls['startBreakTime'].value,
-      endBreakTime: this.attendanceFormControls['endBreakTime'].value,
-      leavingTime: this.attendanceFormControls['leavingTime'].value,
-    };
-
-    // Add attendance record logic here
-  }
+async closeModal() {
+  await this.modalController.dismiss();
+}
 
 }

@@ -9,18 +9,23 @@
 </ion-header>
 
 <ion-content>
-  <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="filterAttendance()"></ion-searchbar>
+  <ion-searchbar [(ngModel)]="searchQuery" (ionChange)="filterAttendance()"></ion-searchbar>
 
   <ion-list>
-    <ion-item *ngFor="let record of attendance; let i = index">
-      <ion-label>{{ record.employee_name }}</ion-label>
+    <ion-item *ngFor="let record of filteredAttendances; let index=index">
+      <ion-label>
+        <h2>{{ getEmployeeName(record.employee) }}</h2>
+        <p>{{ record.date }}</p>
+        <p>{{ record.attendance_type }}</p>
+        <p>{{ record.date_time }}</p>
+      </ion-label>
       <ion-buttons slot="end">
-        <ion-button (click)="editAttendance()">
+        <ion-button (click)="editAttendance(index)">
           <ion-icon name="pencil"></ion-icon>
         </ion-button>
       </ion-buttons>
       <ion-buttons slot="end">
-        <ion-button (click)="deleteItem(i)">
+        <ion-button (click)="deleteItem(record.id)">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
       </ion-buttons>

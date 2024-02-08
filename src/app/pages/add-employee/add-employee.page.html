@@ -8,49 +8,42 @@
 </ion-header>
 
 <ion-content>
-  <form [formGroup]="employeeForm" (ngSubmit)="addEmployee()">
+  <form [formGroup]="employeeForm" >
     <ion-item>
       <ion-label position="floating">First Name</ion-label>
-      <ion-input type="text" formControlName="firstName" required></ion-input>
+      <ion-input type="text" [(ngModel)]="first_name" class="form-control" [ngModelOptions]="{standalone: true}" required></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Last Name</ion-label>
-      <ion-input type="text" formControlName="lastName" required></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="floating">Username</ion-label>
-      <ion-input type="text" [formControlName="username" required></ion-input>
-    </ion-item>
-
-    <ion-item>
-      <ion-label position="floating">Email</ion-label>
-      <ion-input type="email" formControlName="email" required></ion-input>
+      <ion-input type="text" [(ngModel)]="last_name" class="form-control" [ngModelOptions]="{standalone: true}" required></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Contact</ion-label>
-      <ion-input type="text" formControlName="contact" required></ion-input>
+      <ion-input type="text" [(ngModel)]="contact" class="form-control" [ngModelOptions]="{standalone: true}" required></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Address</ion-label>
-      <ion-input type="text" formControlName="address" required></ion-input>
+      <ion-input type="text" [(ngModel)]="address" class="form-control" [ngModelOptions]="{standalone: true}" required></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Sex</ion-label>
-      <ion-input type="text" formControlName="sex" required></ion-input>
+      <ion-select [(ngModel)]="sex" class="form-control" [ngModelOptions]="{standalone: true}" required>
+        <ion-select-option value="MALE" >Male</ion-select-option>
+        <ion-select-option value="FEMALE" >Female</ion-select-option>
+      </ion-select>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Department</ion-label>
-      <ion-select formControlName="department" required>
-        <ion-select-option *ngFor="let department of departments" [value]="department.id">{{ department.role_name }}</ion-select-option>
+      <ion-select [(ngModel)]="department" class="form-control" [ngModelOptions]="{standalone: true}" required>
+        <ion-select-option *ngFor="let department of departments" [value]="department.id">{{ department.name }}</ion-select-option>
       </ion-select>
     </ion-item>
-
-    <ion-button expand="full" type="submit">Add Employee</ion-button>
+    <ion-button expand="full" type="submit" (click)="postEmployee()">save</ion-button>
   </form>
+  <ion-button expand="full" (click)="closeModal()">Close</ion-button>
 </ion-content>

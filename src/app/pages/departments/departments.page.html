@@ -9,18 +9,18 @@
 </ion-header>
 
 <ion-content>
-  <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="filterDepartments()"></ion-searchbar>
+  <ion-searchbar [(ngModel)]=" searchQuery" (ionChange)="filterDepartments()"></ion-searchbar>
 
   <ion-list>
-    <ion-item *ngFor="let department of filteredDepartments; let i = index">
-      <ion-label>{{ department.role_name }}</ion-label>
+    <ion-item *ngFor="let department of filteredDepartments; let index=index">
+      <ion-label>{{ department.name }}</ion-label>
       <ion-buttons slot="end">
-        <ion-button (click)="editDepartment()">
+        <ion-button (click)="editDepartment(department.id)">
           <ion-icon name="pencil"></ion-icon>
         </ion-button>
       </ion-buttons>
       <ion-buttons slot="end">
-        <ion-button (click)="deleteItem(i)">
+        <ion-button (click)="deleteItem(index)">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
       </ion-buttons>

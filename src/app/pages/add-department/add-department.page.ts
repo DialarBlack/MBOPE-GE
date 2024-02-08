@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ModalController } from '@ionic/angular';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import {  MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-add-department',
@@ -8,31 +12,44 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class AddDepartmentPage implements OnInit {
   departmentForm: FormGroup;
+  name="";
+  description="";
 
-  constructor(private formBuilder: FormBuilder) { 
+  constructor(private menuCtrl: MenuController, private router: Router, private http: HttpClient, private modalController: ModalController, private formBuilder: FormBuilder) { 
     this.departmentForm = this.formBuilder.group({
-      role_name: ['', Validators.required],
+      name: ['', Validators.required],
       description: ['', Validators.required],
     });
   }
 
   ngOnInit() {
+    this.menuCtrl.enable(true);
   }
   get departmentFormControls() {
     return this.departmentForm.controls;
   }
 
   addDepartment() {
-    if (this.departmentForm.invalid) {
-      return;
+    const departmentData={
+      name:this.name,
+      description:this.description,
+      
     }
-
-    const department = {
-      role_name: this.departmentFormControls['role_name'].value,
-      description: this.departmentFormControls['description'].value,
-    };
-
-    // Add department logic here
-  }
+    return this.http.post('https://dialarblack.pythonanywhere.com/departments/', departmentData).subscribe({
+      next: (response) => {
+        console.log(response);
+        alert('Department added successfully.'); // Display success message
+        this.router.navigate(['/departments']); // Navigate to the list of employees
+        // Handle success
+      },
+      error: (error) => {
+        console.log(error);
+        // Handle error
+      }
+    });
+}
+async closeModal() {
+  await this.modalController.dismiss();
+}
 
 }

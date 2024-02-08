@@ -1,6 +1,22 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
+import { HttpClient } from '@angular/common/http';
+import { ModalController } from '@ionic/angular';
+import { AddEmployeePage } from '../add-employee/add-employee.page';
+import { EditEmployeePage } from '../edit-employee/edit-employee.page';
+import {  MenuController } from '@ionic/angular';
+
+
+interface Employee {
+  id: number;
+  first_name: string;
+  last_name: string;
+  contact: string;
+  address: string,
+  sex: string,
+  department: number,
+}
 
 @Component({
   selector: 'app-employees',
@@ -9,72 +25,99 @@ import { AlertController, ToastController } from '@ionic/angular';
 })
 export class EmployeesPage implements OnInit {
 
-  employees = [
-    { id: 1, first_name: 'John', last_name: 'Doe', username: '@john.doe', email: 'john@example.com', contact: '+123456789', address: '123 Main St', sex: 'Male', department: 'Sales' },
-    { id: 2, first_name: 'Jane', last_name: 'Smith', username: '@jane.smith', email: 'jane@example.com', contact: '+987654321', address: '456 Elm St', sex: 'Female', department: 'Human Resources' },
-    { id: 3, first_name: 'David', last_name: 'Johnson', username: '@david.johnson', email: 'david@example.com', contact: '+456789123', address: '789 Oak St', sex: 'Male', department: 'IT' },
-    { id: 4, first_name: 'Emily', last_name: 'Davis', username: '@emily.davis', email: 'emily@example.com', contact: '+321987654', address: '987 Pine St', sex: 'Female', department: 'Marketing' },
-    { id: 5, first_name: 'Michael', last_name: 'Wilson', username: '@michael.wilson', email: 'michael@example.com', contact: '+654321987', address: '654 Cedar St', sex: 'Male', department: 'Finance' }
-  ];
-  filteredEmployees = this.employees;
-  searchTerm = '';
+  employees: any;
+  searchQuery = "";
+  filteredEmployees: any[]=[];
   showSuccessMessage: boolean = false;
 
 
-  constructor(private router: Router, public alertController: AlertController,  public toastController: ToastController) { }
+  constructor(private menuCtrl: MenuController, private modalController: ModalController, private router: Router, public alertController: AlertController, public toastController: ToastController, private http: HttpClient) {
+    this.http.get('https://dialarblack.pythonanywhere.com/employees/').subscribe(response => {
+      this.employees = response
+      this.filteredEmployees = this.employees;
+    });
+  }
 
   ngOnInit() {
+    this.menuCtrl.enable(true);
   }
 
+  
   filterEmployees() {
-    if (this.searchTerm.trim() !== '') {
-      this.filteredEmployees = this.employees.filter(employee =>
-        employee.first_name.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    } else {
-      this.filteredEmployees = this.employees;
+    const query = this.searchQuery.toLowerCase().trim();
+
+    if (!query) {
+      this.filteredEmployees = this.employees; // Reset filter if search query is empty
+      return;
     }
+
+    this.filteredEmployees = this.employees.filter(
+      (employee: Employee) =>
+        employee.first_name.toLowerCase().includes(query) ||
+        employee.last_name.toLowerCase().includes(query)
+    );
   }
 
-  editEmployee() {
-    // Handle the edit functionality here
-    console.log('Editing employee');
-    this.router.navigate(['/edit-employee']);
-  }
+  async editEmployee(index: number) {
 
-  addEmployee() {
-    // Handle the add functionality here
-    console.log('Adding a new employee');
-    this.router.navigate(['/add-employee']);
-  }
-  async deleteItem(index: number) {
-    const alert = await this.alertController.create({
-       header: 'Confirm delete',
-       message: 'Are you sure you want to delete this task?',
-       buttons: [{
-         text: 'Cancel',
-         role: 'cancel',
-         handler: () => {
-           console.log('Delete cancelled');
-         }
-       }, {
-         text: 'Delete',
-         handler: () => {
-           this.employees.splice(index, 1);
-           this.showToast('Employee deleted successfully');
-         }
-       }]
+    const modal = await this.modalController.create({
+      component: EditEmployeePage,
+      componentProps: {
+        employee: this.filteredEmployees[index]
+      },
+      keyboardClose: true,
+      backdropDismiss: true
     });
-   
+
+    return await modal.present();
+  }
+
+  async closeModal() {
+    await this.modalController.dismiss();
+  }
+
+  async addEmployee() {
+    const modal = await this.modalController.create({
+      component: AddEmployeePage,
+      keyboardClose: true,
+      backdropDismiss: true
+    });
+    return await modal.present();
+  }
+ async deleteEmployee(employeeId: number) {
+    const alert = await this.alertController.create({
+      header: 'Confirm delete',
+      message: 'Are you sure you want to delete this employee?',
+      buttons: [{
+        text: 'Cancel',
+        role: 'cancel',
+        handler: () => {
+          console.log('Delete cancelled');
+        }
+      }, {
+        text: 'Delete',
+        handler: () => {
+          this.http.delete('https://dialarblack.pythonanywhere.com/employees/' + employeeId)
+            .subscribe({
+              next: () => {
+                this.showToast('Employee deleted successfully');
+                // Redirect to the desired page after deletion
+                this.router.navigate(['/employees']);
+              }
+            });
+        }
+      }]
+    });
+
     await alert.present();
-   }
-   
-   async showToast(message: string) {
+  }
+
+  async showToast(message: string) {
     const toast = await this.toastController.create({
-       message: message,
-       duration: 2000
+      message: message,
+      duration: 2000
     });
     toast.present();
-   }
+  }
 
 }

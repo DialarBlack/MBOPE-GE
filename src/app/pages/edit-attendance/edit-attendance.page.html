@@ -8,36 +8,34 @@
 </ion-header>
 
 <ion-content>
-  <form [formGroup]="attendanceForm" (ngSubmit)="editAttendance()">
+  <form [formGroup]="attendanceForm" (ngSubmit)="editAttendance(attendance.id)">
     <ion-list>
       <ion-item>
         <ion-label position="floating">Date</ion-label>
-        <ion-input value="{{attendance.date}}" name="date" type="date"></ion-input>
+        <ion-input  formControlName="date" type="date" class="form-control" required></ion-input>
       </ion-item>
       <ion-item>
         <ion-label position="floating">Employee</ion-label>
-        <ion-select value="{{attendance.employee_name}}" name="employee">
+        <ion-select  formControlName="employee" class="form-control" required>
           <ion-select-option *ngFor="let employee of employees" [value]="employee.id">{{ employee.first_name }} {{
             employee.last_name }}</ion-select-option>
         </ion-select>
       </ion-item>
       <ion-item>
-        <ion-label position="floating">Arriving Time</ion-label>
-        <ion-input value="{{attendance.arriving_time}}" name="arriving_time" type="time"></ion-input>
+        <ion-label position="floating">Date Time</ion-label>
+        <ion-input  formControlName="date_time" type="text" class="form-control" required></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label position="floating">Start Break Time</ion-label>
-        <ion-input value="{{attendance.start_break_time}}" name="start_break_time" type="time"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">End Break Time</ion-label>
-        <ion-input value="{{attendance.end_break_time}}" name="end_break_time" type="time"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Leaving Time</ion-label>
-        <ion-input value="{{attendance.leaving_time}}" name="leaving_time" type="time"></ion-input>
+        <ion-label position="floating">Attendance Type</ion-label>
+        <ion-select formControlName="attendance_type" class="form-control"  required>
+          <ion-select-option value="ARRIVING TIME" >Arriving Time</ion-select-option>
+          <ion-select-option value="START BREAK TIME" >Start Break Time</ion-select-option>
+          <ion-select-option value="END BREK TIME" >End Break Time </ion-select-option>
+          <ion-select-option value="LEAVING TIME" >Leaving Time</ion-select-option>
+        </ion-select>
       </ion-item>
     </ion-list>
-    <ion-button expand="full" type="submit">Save</ion-button>
+    <ion-button [disabled]="!canSave" expand="full" type="submit">Save</ion-button>
   </form>
+  <ion-button expand="full" (click)="closeModal()">Close</ion-button>
 </ion-content>

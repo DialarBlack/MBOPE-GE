@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { ModalController } from '@ionic/angular';
+import {  MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-edit-task',
@@ -9,49 +12,59 @@ import { Router } from '@angular/router';
 })
 export class EditTaskPage implements OnInit {
   taskForm: FormGroup;
-  task:any;
+  task: any = {};
+  employees: any;
+  projects: any;
+  title = "";
+  description = "";
+  status = "";
+  project = "";
+  employee = "";
 
-    employees = [
-      { id: 1, first_name: 'John', last_name: 'Doe', username: '@john.doe', email: 'john@example.com', contact: '+123456789', address: '123 Main St', sex: 'Male', department: 'Sales' },
-      { id: 2, first_name: 'Jane', last_name: 'Smith', username: '@jane.smith', email: 'jane@example.com', contact: '+987654321', address: '456 Elm St', sex: 'Female', department: 'Human Resources' },
-      { id: 3, first_name: 'David', last_name: 'Johnson', username: '@david.johnson', email: 'david@example.com', contact: '+456789123', address: '789 Oak St', sex: 'Male', department: 'IT' },
-      { id: 4, first_name: 'Emily', last_name: 'Davis', username: '@emily.davis', email: 'emily@example.com', contact: '+321987654', address: '987 Pine St', sex: 'Female', department: 'Marketing' },
-      { id: 5, first_name: 'Michael', last_name: 'Wilson', username: '@michael.wilson', email: 'michael@example.com', contact: '+654321987', address: '654 Cedar St', sex: 'Male', department: 'Finance' }
-    ];
+  constructor(private menuCtrl: MenuController, private modalController: ModalController, private route: ActivatedRoute, private http: HttpClient, private formBuilder: FormBuilder, private router: Router) {
 
-
-  constructor(private formBuilder: FormBuilder,private router: Router) {
-    this.task = 
-    {
-      id: 1,
-      title: "Complete Project Proposal",
-      description: "Write a detailed project proposal including scope, objectives, and deliverables.",
-      status: "In Progress",
-      startDate: new Date("2024-02-01"),
-      endDate: new Date("2024-02-15"),
-      submittedDate: null,
-      employee: "John Doe",
-    };
+    this.http.get('https://dialarblack.pythonanywhere.com/employees/').subscribe(response => {
+      this.employees = response
+    });
+    this.http.get('https://dialarblack.pythonanywhere.com/projects/').subscribe(response => {
+      this.projects = response
+    });
 
     this.taskForm = this.formBuilder.group({
       title: ['', Validators.required],
       description: ['', Validators.required],
       status: ['', Validators.required],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      submittedDate: ['', Validators.required],
-      employee: ['', Validators.required],
+      project: ['', Validators.required],
+      employee: ['', Validators.required]
     });
   }
 
   ngOnInit() {
+    this.menuCtrl.enable(true);
+    this.taskForm.patchValue({
+      title:this.task.title,
+      description:this.task.description,
+      status:this.task.status,
+      employee:this.task.employee,
+      project:this.task.project,
+    });
   }
-  editTask() {
-    if (this.taskForm.invalid) {
-      return;
-    }else{
-      console.log('editing a task');
-      this.router.navigate(['/tasks']);
-    }
-}
+  async editTask(taskId: number) {
+    
+    const taskData = this.taskForm.value;
+    // Perform the update operation using the API
+     this.http.put('https://dialarblack.pythonanywhere.com/tasks/' + taskId+'/', taskData)
+      .subscribe({
+        next: () => {
+          alert('Tasks updated successfully.'); // Display success message
+        },
+        // error: (error: any) => {
+        //   console.error('Error updating employee:', error); // Log the error response or message
+        // },
+      });
+  }
+
+  async closeModal() {
+    await this.modalController.dismiss();
+  }
 }

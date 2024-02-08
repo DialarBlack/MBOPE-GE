@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AddDepartmentPage } from './add-department.page';
+import {  MenuController } from '@ionic/angular';
 
 describe('AddDepartmentPage', () => {
   let component: AddDepartmentPage;

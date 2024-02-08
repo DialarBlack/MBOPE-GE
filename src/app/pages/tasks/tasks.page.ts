@@ -1,6 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
+import { firstValueFrom } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { ModalController } from '@ionic/angular';
+import { EditTaskPage } from '../edit-task/edit-task.page';
+import { AddTaskPage } from '../add-task/add-task.page';
+import {  MenuController } from '@ionic/angular';
+
+
+interface Task {
+  id: number;
+  title: string;
+  description: string;
+  project:number;
+  employee:number;
+  status: string
+}
+
 
 @Component({
   selector: 'app-tasks',
@@ -9,114 +27,65 @@ import { AlertController, ToastController } from '@ionic/angular';
 })
 export class TasksPage implements OnInit {
 
-   tasks = [
-    {
-      id: 1,
-      title: "Complete Project Proposal",
-      description: "Write a detailed project proposal including scope, objectives, and deliverables.",
-      status: "In Progress",
-      startDate: new Date("2024-02-01"),
-      endDate: new Date("2024-02-15"),
-      submittedDate: null,
-      employee: {
-        id: 1,
-        name: "John Doe",
-        department: "Marketing"
-      }
-    },
-    {
-      id: 2,
-      title: "Create Wireframes",
-      description: "Design wireframes for the user interface of the application.",
-      status: "Pending",
-      startDate: new Date("2024-02-05"),
-      endDate: new Date("2024-02-10"),
-      submittedDate: null,
-      employee: {
-        id: 2,
-        name: "Jane Smith",
-        department: "Design"
-      }
-    },
-    {
-      id: 3,
-      title: "Implement Backend API",
-      description: "Develop the backend API for the application using Node.js and Express.",
-      status: "In Progress",
-      startDate: new Date("2024-02-10"),
-      endDate: new Date("2024-02-28"),
-      submittedDate: null,
-      employee: {
-        id: 3,
-        name: "Alex Johnson",
-        department: "Development"
-      }
-    },
-    {
-      id: 4,
-      title: "Conduct User Testing",
-      description: "Organize and conduct user testing sessions to gather feedback on the application.",
-      status: "Pending",
-      startDate: new Date("2024-02-15"),
-      endDate: new Date("2024-02-18"),
-      submittedDate: null,
-      employee: {
-        id: 4,
-        name: "Emily Davis",
-        department: "Quality Assurance"
-      }
-    },
-    {
-      id: 5,
-      title: "Prepare Presentation",
-      description: "Create a presentation to showcase the project progress and outcomes.",
-      status: "Completed",
-      startDate: new Date("2024-02-20"),
-      endDate: new Date("2024-02-25"),
-      submittedDate: new Date("2024-02-26"),
-      employee: {
-        id: 5,
-        name: "Michael Brown",
-        department: "Marketing"
-      }
-    }
-  ];
-
-  filteredTasks = this.tasks;
-  searchTerm = '';
+  tasks: any;
+  searchQuery = "";
+  filteredTasks: any[]= [];
   showSuccessMessage: boolean = false;
 
 
-  constructor(private router: Router, public alertController: AlertController,  public toastController: ToastController) { }
+  constructor(private menuCtrl: MenuController, private modalController: ModalController, private router: Router, public alertController: AlertController,  public toastController: ToastController, private http: HttpClient) { 
+    this.http.get('https://dialarblack.pythonanywhere.com/tasks/').subscribe(response => {
+      this.tasks = response
+      this.filteredTasks = this.tasks;
+    });
+  }
 
   ngOnInit() {
+    this.menuCtrl.enable(true);
   }
 
   filterTasks() {
-    if (this.searchTerm.trim() !== '') {
-      this.filteredTasks = this.tasks.filter(task =>
-        task.title.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    } else {
-      this.filteredTasks = this.tasks;
+    const query = this.searchQuery.toLowerCase().trim();
+
+    if (!query) {
+      this.filteredTasks = this.tasks; // Reset filter if search query is empty
+      return;
     }
+
+    this.filteredTasks = this.tasks.filter(
+      (task: Task) =>
+        task.title.toLowerCase().includes(query) ||
+        task.status.toLowerCase().includes(query)
+    );
+  }
+  async editTask(index: number) {
+
+    const modal = await this.modalController.create({
+      component: EditTaskPage,
+      componentProps: {
+        task: this.filteredTasks[index]
+      },
+      keyboardClose: true,
+      backdropDismiss: true
+    });
+
+    return await modal.present();
   }
 
-  editTask() {
-    // Redirect to the edit task page with the task ID
-    // Assuming you are using Angular Router, import the Router module and add the following code:
-    this.router.navigate(['/edit-task']);
+
+  async addTask() {
+    const modal = await this.modalController.create({
+      component: AddTaskPage,
+      keyboardClose: true,
+      backdropDismiss: true
+    });
+    return await modal.present();
   }
 
-  addTask() {
-    // Handle the add functionality here
-    
-    this.router.navigate(['/add-task']);
-  }
-  async deleteItem(index: number) {
+  async deleteItem(taskId: number) {
     const alert = await this.alertController.create({
        header: 'Confirm delete',
-       message: 'Are you sure you want to delete this task?',
+       message: 'Are you sure you want to delete this Task?',
        buttons: [{
          text: 'Cancel',
          role: 'cancel',
@@ -126,15 +95,22 @@ export class TasksPage implements OnInit {
        }, {
          text: 'Delete',
          handler: () => {
-           this.tasks.splice(index, 1);
-           this.showToast('Task deleted successfully');
+          this.http.delete('https://dialarblack.pythonanywhere.com/tasks/' + taskId)
+          .subscribe({
+            next: () => {
+              this.showToast('Task deleted successfully');
+              // Redirect to the desired page after deletion
+              this.router.navigate(['/tasks']);
+            }
+          });
          }
        }]
     });
    
     await alert.present();
    }
-   
+
+
    async showToast(message: string) {
     const toast = await this.toastController.create({
        message: message,

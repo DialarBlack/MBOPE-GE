@@ -9,17 +9,17 @@
 </ion-header>
 
 <ion-content>
-  <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="filterEmployees()"></ion-searchbar>
+  <ion-searchbar [(ngModel)]="searchQuery" (ionChange)="filterEmployees()" ></ion-searchbar>
   <ion-list>
-    <ion-item *ngFor="let employee of filteredEmployees; let i = index">
+    <ion-item *ngFor="let employee of filteredEmployees; let index=index">
       <ion-label>{{ employee.first_name }} {{ employee.last_name }}</ion-label>
       <ion-buttons slot="end">
-        <ion-button (click)="editEmployee()">
+        <ion-button (click)="editEmployee(index)">
           <ion-icon name="pencil"></ion-icon>
         </ion-button>
       </ion-buttons>
       <ion-buttons slot="end">
-        <ion-button (click)="deleteItem(i)">
+        <ion-button (click)="deleteEmployee(index)">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
       </ion-buttons>

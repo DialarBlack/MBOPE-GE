@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { ModalController } from '@ionic/angular';
+import {  MenuController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-edit-employee',
@@ -10,40 +14,64 @@ import { Router } from '@angular/router';
 export class EditEmployeePage implements OnInit {
 
   employeeForm: FormGroup;
-  employee:any;
-  departments = [
-    { id: 1, role_name: 'Sales', description: 'Responsible for driving sales and meeting revenue targets' },
-    { id: 2, role_name: 'Human Resources', description: 'Responsible for employee recruitment, training, and welfare' },
-    { id: 3, role_name: 'IT', description: 'Responsible for managing and maintaining the company\'s information technology infrastructure' },
-    { id: 4, role_name: 'Marketing', description: 'Responsible for promoting the company\'s products and services' },
-    { id: 5, role_name: 'Finance', description: 'Responsible for managing the company\'s financial activities and records' }
-  ];
+  employee: any = {};
+  users: any;
+  departments: any;
+  first_name = "";
+  last_name = "";
+  contact = "";
+  address = "";
+  sex = "";
+  department = "";
 
-  
-  constructor(private formBuilder: FormBuilder,private router: Router) {
-    this.employee = 
-    { id: 1, first_name: 'John', last_name: 'Doe', username: '@john.doe', email: 'john@example.com', contact: '+123456789', address: '123 Main St', sex: 'Male', department: 'Sales' };
 
+  constructor(private menuCtrl: MenuController, private modalController: ModalController, private route: ActivatedRoute, private http: HttpClient, private formBuilder: FormBuilder, private router: Router) {
+    this.http.get('https://dialarblack.pythonanywhere.com/users/').subscribe(response => {
+      this.users = response
+    });
+    this.http.get('https://dialarblack.pythonanywhere.com/departments/').subscribe(response => {
+      this.departments = response
+    });
     this.employeeForm = this.formBuilder.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      username: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      first_name: ['', Validators.required],
+      last_name: ['', Validators.required],
       contact: ['', Validators.required],
       address: ['', Validators.required],
       sex: ['', Validators.required],
       department: ['', Validators.required],
     });
-   }
+  }
 
   ngOnInit() {
+    this.menuCtrl.enable(true);
+    this.employeeForm.patchValue({
+      first_name: this.employee.first_name,
+      last_name: this.employee.last_name,
+      contact: this.employee.contact,
+      address: this.employee.address,
+      sex: this.employee.sex,
+      department: this.employee.department,
+      user: this.employee.user
+    });
+
+  };
+  async editEmployee(employeeId: number) {
+    const employeeData = this.employeeForm.value;
+    console.log(employeeData)
+    // Perform the update operation using the API
+     this.http.put('https://dialarblack.pythonanywhere.com/employees/' + employeeId+'/', employeeData)
+      .subscribe({
+        next: () => {
+          alert('Employee updated successfully.'); // Display success message
+        },
+        // error: (error: any) => {
+        //   console.error('Error updating employee:', error); // Log the error response or message
+        // },
+      });
   }
-editEmployee() {
-    if (this.employeeForm.invalid) {
-      return;
-    }else{
-      console.log('editing an employee');
-      this.router.navigate(['/employees']);
-    }
-}
+
+  async closeModal() {
+    await this.modalController.dismiss();
+  }
+
 }

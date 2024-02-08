@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { ModalController } from '@ionic/angular';
+import {  MenuController } from '@ionic/angular';
+
 
 @Component({
   selector: 'app-add-employee',
@@ -8,20 +13,26 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class AddEmployeePage implements OnInit {
   employeeForm: FormGroup;
-  departments = [
-    { id: 1, role_name: 'Sales', description: 'Responsible for driving sales and meeting revenue targets' },
-    { id: 2, role_name: 'Human Resources', description: 'Responsible for employee recruitment, training, and welfare' },
-    { id: 3, role_name: 'IT', description: 'Responsible for managing and maintaining the company\'s information technology infrastructure' },
-    { id: 4, role_name: 'Marketing', description: 'Responsible for promoting the company\'s products and services' },
-    { id: 5, role_name: 'Finance', description: 'Responsible for managing the company\'s financial activities and records' }
-  ];
+  departments : any
+  users: any
+  first_name="";
+  last_name="";
+  contact="";
+  address="";
+  sex="";
+  department="";
+  
 
-  constructor(private formBuilder: FormBuilder) { 
+  constructor(private menuCtrl: MenuController, private modalController: ModalController,private router: Router, private formBuilder: FormBuilder, private http: HttpClient) { 
+    this.http.get('https://dialarblack.pythonanywhere.com/users/').subscribe(response => {
+      this.users = response
+    });
+    this.http.get('https://dialarblack.pythonanywhere.com/departments/').subscribe(response => {
+      this.departments = response
+    });
     this.employeeForm = this.formBuilder.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      username: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      first_name: ['', Validators.required],
+      last_name: ['', Validators.required],
       contact: ['', Validators.required],
       address: ['', Validators.required],
       sex: ['', Validators.required],
@@ -30,28 +41,35 @@ export class AddEmployeePage implements OnInit {
   }
 
   ngOnInit() {
+    this.menuCtrl.enable(true);
   }
   get employeeFormControls() {
     return this.employeeForm.controls;
   }
 
-  addEmployee() {
-    if (this.employeeForm.invalid) {
-      return;
+  postEmployee() {
+    const employeeData={
+      first_name:this.first_name,
+      last_name:this.last_name,
+      contact:this.contact,
+      address:this.address,
+      sex:this.sex,
+      department:this.department,
     }
-
-    const employee = {
-      firstName: this.employeeFormControls['firstName'].value,
-    lastName: this.employeeFormControls['lastName'].value,
-    username: this.employeeFormControls['username'].value,
-    email: this.employeeFormControls['email'].value,
-    contact: this.employeeFormControls['contact'].value,
-    address: this.employeeFormControls['address'].value,
-    sex: this.employeeFormControls['sex'].value,
-    department: this.employeeFormControls['department'].value,
-    };
-
-    // Add employee logic here
-  }
-
+    return this.http.post('https://dialarblack.pythonanywhere.com/employees/', employeeData).subscribe({
+      next: (response) => {
+        console.log(response);
+        alert('Employee added successfully.'); // Display success message
+        this.router.navigate(['/employees']); // Navigate to the list of employees
+        // Handle success
+      },
+      error: (error) => {
+        console.log(error);
+        // Handle error
+      }
+    });
+}
+async closeModal() {
+  await this.modalController.dismiss();
+}
 }

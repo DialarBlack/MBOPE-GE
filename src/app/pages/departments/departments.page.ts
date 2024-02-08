@@ -1,6 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
+import { firstValueFrom } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { ModalController } from '@ionic/angular';
+import { EditDepartmentPage } from '../edit-department/edit-department.page';
+import { AddDepartmentPage } from '../add-department/add-department.page';
+import {  MenuController } from '@ionic/angular';
+
+interface Department {
+  id: number;
+  name: string;
+  description: string;
+}
+
 
 @Component({
   selector: 'app-departments',
@@ -8,47 +22,62 @@ import { AlertController, ToastController } from '@ionic/angular';
   styleUrls: ['./departments.page.scss'],
 })
 export class DepartmentsPage implements OnInit {
-  departments = [
-    { id: 1, role_name: 'Sales', description: 'Responsible for driving sales and meeting revenue targets' },
-    { id: 2, role_name: 'Human Resources', description: 'Responsible for employee recruitment, training, and welfare' },
-    { id: 3, role_name: 'IT', description: 'Responsible for managing and maintaining the company\'s information technology infrastructure' },
-    { id: 4, role_name: 'Marketing', description: 'Responsible for promoting the company\'s products and services' },
-    { id: 5, role_name: 'Finance', description: 'Responsible for managing the company\'s financial activities and records' }
-  ];
+  departments: any;
+  searchQuery = "";
+  filteredDepartments: any[]= [];
+  showSuccessMessage: boolean = false;
 
-  filteredDepartments = this.departments;
-  searchTerm = '';
-
-  constructor(private router: Router, public alertController: AlertController,  public toastController: ToastController) { }
+  constructor(private menuCtrl: MenuController, private modalController: ModalController, private router: Router, public alertController: AlertController,  public toastController: ToastController, private http: HttpClient) {
+    this.http.get('https://dialarblack.pythonanywhere.com/departments/').subscribe(response => {
+      this.departments = response
+      this.filteredDepartments = this.departments;
+    });
+   }
 
   ngOnInit() {
+    this.menuCtrl.enable(true);
   }
 
   filterDepartments() {
-    if (this.searchTerm.trim() !== '') {
-      this.filteredDepartments = this.departments.filter(department =>
-        department.role_name.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    } else {
-      this.filteredDepartments = this.departments;
+    const query = this.searchQuery.toLowerCase().trim();
+
+    if (!query) {
+      this.filteredDepartments = this.departments; // Reset filter if search query is empty
+      return;
     }
+
+    this.filteredDepartments = this.departments.filter(
+      (department: Department) =>
+        department.name.toLowerCase().includes(query) 
+    );
   }
 
-  editDepartment() {
-    // Handle the edit functionality here
-    console.log('Editing department');
-    this.router.navigate(['/edit-department']);
+  async editDepartment(index: number) {
+    
+    const modal = await this.modalController.create({
+      component: EditDepartmentPage,
+      componentProps: {
+        department: this.filteredDepartments[index]
+      },
+      keyboardClose: true,
+      backdropDismiss: true
+    });
+
+    return await modal.present();
   }
 
-  addDepartment() {
-    // Handle the add functionality here
-    console.log('Adding a new department');
-    this.router.navigate(['/add-department']);
+  async addDepartment() {
+    const modal = await this.modalController.create({
+      component: AddDepartmentPage,
+      keyboardClose: true,
+      backdropDismiss: true
+    });
+    return await modal.present();
   }
-  async deleteItem(index: number) {
+  async deleteItem(departmentId: number) {
     const alert = await this.alertController.create({
        header: 'Confirm delete',
-       message: 'Are you sure you want to delete this task?',
+       message: 'Are you sure you want to delete this department?',
        buttons: [{
          text: 'Cancel',
          role: 'cancel',
@@ -58,8 +87,14 @@ export class DepartmentsPage implements OnInit {
        }, {
          text: 'Delete',
          handler: () => {
-           this.departments.splice(index, 1);
-           this.showToast('Department deleted successfully');
+          this.http.delete('https://dialarblack.pythonanywhere.com/departments/' + departmentId)
+          .subscribe({
+            next: () => {
+              this.showToast('Department deleted successfully');
+              // Redirect to the desired page after deletion
+              this.router.navigate(['/departments']);
+            }
+          });
          }
        }]
     });

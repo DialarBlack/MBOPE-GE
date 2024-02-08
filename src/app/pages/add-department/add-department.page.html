@@ -8,17 +8,18 @@
 </ion-header>
 
 <ion-content>
-  <form [formGroup]="departmentForm" (ngSubmit)="addDepartment()">
+  <form [formGroup]="departmentForm" >
     <ion-item>
       <ion-label position="floating">Name</ion-label>
-      <ion-input type="text" formControlName="role_name" required></ion-input>
+      <ion-input type="text"  [(ngModel)]="name"class="form-control" [ngModelOptions]="{standalone: true}" required></ion-input>
     </ion-item>
 
     <ion-item>
       <ion-label position="floating">Description</ion-label>
-      <ion-input type="text" formControlName="description" required></ion-input>
+      <ion-input type="text"  [(ngModel)]="description" class="form-control" [ngModelOptions]="{standalone: true}" required></ion-input>
     </ion-item>
 
-    <ion-button expand="full" type="submit">Add Department</ion-button>
+    <ion-button expand="full" type="submit" (click)="addDepartment()">Add Department</ion-button>
   </form>
+  <ion-button expand="full" (click)="closeModal()">Close</ion-button>
 </ion-content>

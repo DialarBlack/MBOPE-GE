@@ -1,50 +1,35 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
-    <ion-title>Edit Employee</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
-  <form [formGroup]="employeeForm" (ngSubmit)="editEmployee()">
-    <ion-list>
-      <ion-item>
-        <ion-label position="floating">First Name</ion-label>
-        <ion-input value="{{employee.first_name}}" name="first_name" type="text"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Last Name</ion-label>
-        <ion-input value="{{employee.last_name}}" name="last_name" type="text"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Email</ion-label>
-        <ion-input value="{{employee.email}}" name="email" type="email"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Contact</ion-label>
-        <ion-input value="{{employee.contact}}" name="contact" type="tel"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Address</ion-label>
-        <ion-input value="{{employee.address}}" name="contact" type="text"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Sex</ion-label>
-        <ion-select value="{{employee.sex}}" name="sex">
-          <ion-select-option >Male</ion-select-option>
-          <ion-select-option >Female</ion-select-option>
-        </ion-select>
-      </ion-item>
-      <ion-item>
-        <ion-label position="floating">Department</ion-label>
-        <ion-select value="{{employee.department}}" name="department">
-          <ion-select-option *ngFor="let department of departments" [value]="department.id">{{ department.role_name
-            }}</ion-select-option>
-        </ion-select>
-      </ion-item>
-    </ion-list>
-    <ion-button expand="full" type="submit">Save</ion-button>
+  <form [formGroup]="employeeForm">
+    <ion-item>
+      <ion-label position="floating">First Name</ion-label>
+      <ion-input type="text" formControlName="first_name" class="form-control" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Last Name</ion-label>
+      <ion-input type="text" formControlName="last_name" class="form-control" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Contact</ion-label>
+      <ion-input type="email" formControlName="contact" class="form-control" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Address</ion-label>
+      <ion-input type="text" formControlName="address" class="form-control" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Sex</ion-label>
+      <ion-select formControlName="sex">
+        <ion-select-option value="MALE">Male</ion-select-option>
+        <ion-select-option value="FEMALE">Female</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Department</ion-label>
+      <ion-select formControlName="department" class="form-control" required>
+        <ion-select-option *ngFor="let department of departments" [value]="department.id">{{ department.name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-button expand="full" type="submit" (click)="editEmployee(employee.id)">Save</ion-button>
   </form>
+  <ion-button expand="full" (click)="closeModal()">Close</ion-button>
 </ion-content>

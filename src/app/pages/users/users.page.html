@@ -9,18 +9,18 @@
 </ion-header>
 
 <ion-content>
-  <ion-searchbar [(ngModel)]="searchTerm" (ionChange)="filterUsers()"></ion-searchbar>
+  <ion-searchbar [(ngModel)]="searchQuery" (ionChange)="filterUsers()"></ion-searchbar>
 
   <ion-list>
-    <ion-item *ngFor="let user of filteredUsers; let i = index">
+    <ion-item *ngFor="let user of filteredUsers; let index=index">
       <ion-label>{{ user.username }}</ion-label>
       <ion-buttons slot="end">
-        <ion-button (click)="editUser()">
+        <ion-button (click)="editUser(index)">
           <ion-icon name="pencil"></ion-icon>
         </ion-button>
       </ion-buttons>
       <ion-buttons slot="end">
-        <ion-button (click)="deleteItem(i)">
+        <ion-button (click)="deleteItem(user.id)">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
       </ion-buttons>

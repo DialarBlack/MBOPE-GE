@@ -8,30 +8,28 @@
 </ion-header>
 
 <ion-content>
-  <form [formGroup]="userForm" (ngSubmit)="editUser()">
-    <ion-item>
-      <ion-label position="floating">Picture</ion-label>
-      <ion-input value="{{user.picture}}" name="username" type="file"></ion-input>
-    </ion-item>
+  <form [formGroup]="userForm" >
     <ion-item>
       <ion-label position="floating">Username</ion-label>
-      <ion-input value="{{user.username}}" name="username" type="text"></ion-input>
+      <ion-input formControlName="username" type="text" class="form-control" required></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="floating">Email</ion-label>
-      <ion-input value="{{user.email}}" name="email" type="email"></ion-input>
+      <ion-input formControlName="email" type="email" class="form-control" required></ion-input>
     </ion-item>
-    <ion-item>
+    <!-- <ion-item>
       <ion-label position="floating">Password</ion-label>
-      <ion-input value="{{user.password}}" name="password" type="password"></ion-input>
+      <ion-input formControlName="password" type="password" class="form-control" required></ion-input>
+    </ion-item> -->
+    <!-- <ion-item>
+      <ion-label>Active</ion-label>
+      <ion-toggle formControlName="is_active" class="form-control" required></ion-toggle>
     </ion-item>
     <ion-item>
-      <ion-label position="floating">Role</ion-label>
-      <ion-select value="{{user.role}}" name="status">
-        <ion-select-option value="admin">Admin</ion-select-option>
-        <ion-select-option value="user">User</ion-select-option>
-      </ion-select>
-    </ion-item>
-    <ion-button expand="full" type="submit">Save</ion-button>
+      <ion-label>Superuser</ion-label>
+      <ion-toggle formControlName="is_superuser" class="form-control" required></ion-toggle>
+    </ion-item> -->
+    <ion-button expand="full" type="submit" (click)="editUser(user.id)">Save</ion-button>
   </form>
+  <ion-button expand="full" (click)="closeModal()">Close</ion-button>
 </ion-content>

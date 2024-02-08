@@ -3,20 +3,15 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'loader',
-    loadChildren: () => import('./pages/loader/loader.module').then( m => m.LoaderPageModule)
-  },
-  {
-    path: 'login',
+    path: '',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
+  },
+  { 
+    path: 'home', loadChildren: () => import('./pages/home/home.module').then(m => m.HomePageModule)
   },
   {
     path: 'register',
     loadChildren: () => import('./pages/register/register.module').then( m => m.RegisterPageModule)
-  },
-  {
-    path: '',
-    loadChildren: () => import('./pages/home/home.module').then( m => m.HomePageModule)
   },
   {
     path: 'users',
@@ -67,7 +62,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/edit-task/edit-task.module').then( m => m.EditTaskPageModule)
   },
   {
-    path: 'edit-employee',
+    path: 'edit-employee/:id',
     loadChildren: () => import('./pages/edit-employee/edit-employee.module').then( m => m.EditEmployeePageModule)
   },
   {
@@ -93,6 +88,22 @@ const routes: Routes = [
   {
     path: 'permission',
     loadChildren: () => import('./pages/permission/permission.module').then( m => m.PermissionPageModule)
+  },
+  {
+    path: 'logout',
+    loadChildren: () => import('./pages/logout/logout.module').then( m => m.LogoutPageModule)
+  },
+  {
+    path: 'projects',
+    loadChildren: () => import('./pages/projects/projects.module').then( m => m.ProjectsPageModule)
+  },
+  {
+    path: 'edit-project',
+    loadChildren: () => import('./pages/edit-project/edit-project.module').then( m => m.EditProjectPageModule)
+  },
+  {
+    path: 'add-project',
+    loadChildren: () => import('./pages/add-project/add-project.module').then( m => m.AddProjectPageModule)
   },
 ];
 

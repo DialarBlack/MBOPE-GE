@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { ModalController } from '@ionic/angular';
+import {  MenuController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-edit-attendance',
@@ -9,40 +13,55 @@ import { Router } from '@angular/router';
 })
 export class EditAttendancePage implements OnInit {
 
+  canSave: any;
   attendanceForm:FormGroup;
-  attendance:any;
+  attendance: any = {};
+  employees: any;
+  date = "";
+  employee = "";
+  attendance_type = "";
+  date_time = "";
   
-  employees = [
-    { id: 1, first_name: 'John', last_name: 'Doe', username: '@john.doe', email: 'john@example.com', contact: '+123456789', address: '123 Main St', sex: 'Male', department: 'Sales' },
-    { id: 2, first_name: 'Jane', last_name: 'Smith', username: '@jane.smith', email: 'jane@example.com', contact: '+987654321', address: '456 Elm St', sex: 'Female', department: 'Human Resources' },
-    { id: 3, first_name: 'David', last_name: 'Johnson', username: '@david.johnson', email: 'david@example.com', contact: '+456789123', address: '789 Oak St', sex: 'Male', department: 'IT' },
-    { id: 4, first_name: 'Emily', last_name: 'Davis', username: '@emily.davis', email: 'emily@example.com', contact: '+321987654', address: '987 Pine St', sex: 'Female', department: 'Marketing' },
-    { id: 5, first_name: 'Michael', last_name: 'Wilson', username: '@michael.wilson', email: 'michael@example.com', contact: '+654321987', address: '654 Cedar St', sex: 'Male', department: 'Finance' }
-  ];
 
-  constructor(private formBuilder: FormBuilder,private router: Router) { 
-    this.attendance = 
-    { id: 1, employee_name: 'John Doe', date: '2024-01-28', arriving_time: '09:00', start_break_time: '12:00', end_break_time: '13:00', leaving_time: '17:00' };
-
+  constructor(private authService: AuthService, private menuCtrl: MenuController, private modalController: ModalController, private route: ActivatedRoute, private http: HttpClient, private formBuilder: FormBuilder, private router: Router) { 
+    this.http.get('https://dialarblack.pythonanywhere.com/employees/').subscribe(response => {
+      this.employees = response
+    });
     this.attendanceForm = this.formBuilder.group({
-      employeeName: ['', Validators.required],
+      employee: ['', Validators.required],
       date: ['', Validators.required],
-      arrivingTime: ['', Validators.required],
-      startBreakTime: [''],
-      endBreakTime: [''],
-      leavingTime: ['', Validators.required],
+      attendance_type: ['', Validators.required],
+      date_time: ['', Validators.required],
     });
   }
 
   ngOnInit() {
+    this.attendanceForm.patchValue({
+      date: this.attendance.date,
+      employee: this.attendance.employee,
+      attendance_type: this.attendance.attendance_type,
+      date_time: this.attendance.date_time,
+    });
+    this.menuCtrl.enable(true);
+    this.canSave = this.authService.getUserStatus(); 
   }
-  editAttendance() {
-    if (this.attendanceForm.invalid) {
-      return;
-    }else{
-      console.log('editing an attendance');
-      this.router.navigate(['/attendance']);
-    }
-}
+  async editAttendance(attendanceId: number) {
+    
+    const attendanceData = this.attendanceForm.value;
+    // Perform the update operation using the API
+     this.http.put('https://dialarblack.pythonanywhere.com/attendance/' + attendanceId+'/', attendanceData)
+      .subscribe({
+        next: () => {
+          alert('Attendance record updated successfully.'); // Display success message
+        },
+        // error: (error: any) => {
+        //   console.error('Error updating employee:', error); // Log the error response or message
+        // },
+      });
+  }
+
+  async closeModal() {
+    await this.modalController.dismiss();
+  }
 
 }

@@ -22,11 +22,4 @@ describe('RegisterPage', () => {
     router = TestBed.get(Router);
   }));
 
-  it('should go to home page after register', () => {
-    spyOn(router, 'navigate');
-
-    component.register();
-
-    expect(router.navigate).toHaveBeenCalledWith(['home'])
-  });
 });

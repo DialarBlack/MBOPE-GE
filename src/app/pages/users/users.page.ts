@@ -1,6 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
+import { AddUserPage } from '../add-user/add-user.page';
+import { ModalController } from '@ionic/angular';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { EditUserPage } from '../edit-user/edit-user.page';
+import {  MenuController } from '@ionic/angular';
+
+
+interface User {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+}
 
 @Component({
   selector: 'app-users',
@@ -9,48 +24,64 @@ import { AlertController, ToastController } from '@ionic/angular';
 })
 export class UsersPage implements OnInit {
 
-  users = [
-    { id: 1, username: '@john.doe', email: 'john@example.com', password: 'password', role: 'admin' },
-    { id: 2, username: '@jane.smith', email: 'jane@example.com', password: 'password2', role: 'user' },
-    { id: 3, username: '@john2.doe2', email: 'john2@example.com', password: 'password3', role: 'user' },
-    { id: 4, username: '@jane2.smith2', email: 'jane2@example.com', password: 'password4', role: 'user' },
-    { id: 5, username: '@jane3.smith2', email: 'jane3@example.com', password: 'password5', role: 'user' },
-    // Add more users here
-  ];
-
-  filteredUsers = this.users;
-  searchTerm = '';
+  users: any;
+  searchQuery = "";
+  filteredUsers: any[]= [];
+  showSuccessMessage: boolean = false;
 
 
-  constructor(private router: Router, public alertController: AlertController,  public toastController: ToastController) { }
+  constructor(private menuCtrl: MenuController, private http: HttpClient, private modalController: ModalController, private router: Router, public alertController: AlertController,  public toastController: ToastController) { 
+    this.http.get('https://dialarblack.pythonanywhere.com/users/').subscribe(response => {
+      this.users = response
+      this.filteredUsers = this.users;
+    });
+  }
 
   ngOnInit() {
+    this.menuCtrl.enable(true);
   }
   filterUsers() {
-    if (this.searchTerm.trim() !== '') {
-      this.filteredUsers = this.users.filter(user =>
-        user.username.toLowerCase().includes(this.searchTerm.toLowerCase())
-      );
-    } else {
-      this.filteredUsers = this.users;
+    const query = this.searchQuery.toLowerCase().trim();
+
+    if (!query) {
+      this.filteredUsers = this.users; // Reset filter if search query is empty
+      return;
     }
+
+    this.filteredUsers = this.users.filter(
+      (employee: User) =>
+        employee.username.toLowerCase().includes(query)
+    );
   }
 
-  editUser() {
-    // Handle the edit functionality here
-    console.log('edit a new user');
-    this.router.navigate(['/edit-user']);
+  async editUser(index: number) {
+
+    const modal = await this.modalController.create({
+      component: EditUserPage,
+      componentProps: {
+        user: this.filteredUsers[index]
+      },
+      keyboardClose: true,
+      backdropDismiss: true
+    });
+
+    return await modal.present();
   }
 
-  addUser() {
-    // Handle the add functionality here
-    console.log('Adding a new user');
-    this.router.navigate(['/add-user']);
+  
+
+  async addUser() {
+    const modal = await this.modalController.create({
+      component: AddUserPage,
+      keyboardClose: true,
+      backdropDismiss: true
+    });
+    return await modal.present();
   }
-  async deleteItem(index: number) {
+  async deleteItem(userId: number) {
     const alert = await this.alertController.create({
        header: 'Confirm delete',
-       message: 'Are you sure you want to delete this task?',
+       message: 'Are you sure you want to delete this user?',
        buttons: [{
          text: 'Cancel',
          role: 'cancel',
@@ -60,8 +91,14 @@ export class UsersPage implements OnInit {
        }, {
          text: 'Delete',
          handler: () => {
-           this.users.splice(index, 1);
-           this.showToast('User deleted successfully');
+          this.http.delete('https://dialarblack.pythonanywhere.com/users/' + userId)
+          .subscribe({
+            next: () => {
+              this.showToast('User deleted successfully');
+              // Redirect to the desired page after deletion
+              this.router.navigate(['/users']);
+            }
+          });
          }
        }]
     });

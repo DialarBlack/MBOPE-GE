@@ -1,0 +1,35 @@
+<!-- departments.page.html -->
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Projects</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar [(ngModel)]="searchQuery" (ionChange)="filterProjects()"></ion-searchbar>
+
+  <ion-list>
+    <ion-item *ngFor="let project of filteredProjects; let index=index">
+      <ion-label>{{ project.title }}</ion-label>
+      <ion-buttons slot="end">
+        <ion-button (click)="editProject(index)">
+          <ion-icon name="pencil"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-buttons slot="end">
+        <ion-button (click)="deleteItem(project.id)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addProject()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

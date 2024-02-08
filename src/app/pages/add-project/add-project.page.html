@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Add Project</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="projectForm" >
+    <ion-item>
+      <ion-label position="floating">Title</ion-label>
+      <ion-input type="text"  [(ngModel)]="title"class="form-control" [ngModelOptions]="{standalone: true}" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Description</ion-label>
+      <ion-input type="text"  [(ngModel)]="description" class="form-control" [ngModelOptions]="{standalone: true}" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Status</ion-label>
+      <ion-select [(ngModel)]="status" class="form-control"  [ngModelOptions]="{standalone: true}" required>
+        <ion-select-option value="PENDING">Pending</ion-select-option>
+        <ion-select-option value="PROGRESSING">In Progress</ion-select-option>
+        <ion-select-option value="COMPLETE">Completed</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-button expand="full" type="submit" (click)="addProject()">Add Department</ion-button>
+  </form>
+  <ion-button expand="full" (click)="closeModal()">Close</ion-button>
+</ion-content>
