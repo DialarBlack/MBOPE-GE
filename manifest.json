@@ -1,0 +1,16 @@
+{
+    "name": "Mbope GE",
+    "short_name": "Mbope GE",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "description": "Specifically for managing Mbope employees, projects, attendance, tasks and projects",
+    "icons": [
+      {
+        "src": "assets/icon/mbope logo.jpg",
+        "sizes": "192x192",
+        "type": "image/jpeg"
+      }
+    ]
+  }
+  

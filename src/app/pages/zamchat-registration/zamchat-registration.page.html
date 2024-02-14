@@ -1,0 +1,184 @@
+<ion-content class="pink-button">
+  <div >
+    <ion-card *ngIf="currentForm === 1" class="form-card" >
+      <ion-card-header>
+        Personal Information
+      </ion-card-header>
+      <ion-card-content class="form-card-content">
+        <ion-item class="form-item">
+          <ion-icon slot="start" name="person" class="pink-icon"></ion-icon>
+          <ion-input [(ngModel)]="name" type="email" type="text" placeholder="name">
+          </ion-input>
+        </ion-item>  
+        <ion-item class="form-item">
+          <ion-icon slot="start" name="person" class="pink-icon"></ion-icon>
+          <ion-input [(ngModel)]="surname" type="text" placeholder="surname">
+          </ion-input>
+        </ion-item>
+        <ion-item class="form-item">
+          <ion-icon slot="start" name="calendar" class="pink-icon"></ion-icon>
+          <ion-input [(ngModel)]="surname" type="date" placeholder="Date of Birth">
+          </ion-input>
+        </ion-item>
+        <ion-item class="form-item">
+          <ion-icon name="transgender" slot="start" class="pink-icon"></ion-icon>
+          <ion-radio-group [(ngModel)]="selectedSex">
+            <ion-label slot="start" color="medium">Select a sex</ion-label>
+            <ion-item>
+              <ion-label>Male</ion-label>
+              <ion-radio slot="start" value="male"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>Female</ion-label>
+              <ion-radio slot="start" value="female"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>Other</ion-label>
+              <ion-radio slot="start" value="other"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </ion-item>
+        <ion-item class="form-item">
+          <ion-icon slot="start" name="call" class="pink-icon"></ion-icon>
+          <ion-input [(ngModel)]="phone" type="tel" placeholder="+237693648364">
+          </ion-input>
+        </ion-item>
+        <ion-item class="form-item">
+          <ion-icon slot="start" name="mail" class="pink-icon"></ion-icon>
+          <ion-input [(ngModel)]="email" type="email" placeholder="example@gmail.com">
+          </ion-input>
+        </ion-item> 
+        <ion-item class="form-item">
+          <ion-icon slot="start" name="lock-closed" class="pink-icon"></ion-icon>
+          <ion-input [(ngModel)]="password" type="password" placeholder="password">
+          </ion-input>
+        </ion-item>       
+        <ion-item class="form-item">
+          <ion-icon slot="start" name="lock-closed" class="pink-icon"></ion-icon>
+          <ion-input [(ngModel)]="confirmPassword" type="password" placeholder="confirm password">
+          </ion-input>
+        </ion-item> 
+      </ion-card-content>
+      <ion-button expand="full" (click)="nextForm()" class="pink-button">Next</ion-button>
+      <ion-button expand="full" (click)="previousForm()">Previous</ion-button>
+    </ion-card>
+
+  </div>
+  <div >
+    <ion-card *ngIf="currentForm === 2" class="form-card">
+      <ion-card-header>
+        Location and Profession
+      </ion-card-header>
+      <ion-card-content class="form-card-content">
+        <ion-item class="form-item">
+          <ion-icon slot="start" name="flag" class="pink-icon"></ion-icon>
+          <ion-input [(ngModel)]="country" type="text" placeholder="country">
+          </ion-input>
+        </ion-item>
+        <ion-item class="form-item">
+          <ion-icon slot="start" name="location" class="pink-icon"></ion-icon>
+          <ion-input [(ngModel)]="town" type="text" placeholder="town">
+          </ion-input>
+        </ion-item>
+        <ion-item class="form-item">
+          <ion-icon slot="start" name="person-circle" class="pink-icon"></ion-icon>
+          <ion-input [(ngModel)]="profession" type="text" placeholder="profession">
+          </ion-input>
+        </ion-item>
+        <ion-item class="form-item">
+          <ion-icon slot="start" name="cash" class="pink-icon"></ion-icon>
+          <ion-input [(ngModel)]="salary" type="text" placeholder="salary">
+          </ion-input>
+        </ion-item>
+        <ion-item class="form-item">
+          <ion-icon slot="start" name="car" class="pink-icon"></ion-icon>
+          <ion-label>Do you have a car?</ion-label>
+          <ion-checkbox [(ngModel)]="hasCar"></ion-checkbox>
+        </ion-item>
+      </ion-card-content>
+      <ion-button expand="full" (click)="nextForm()">Next</ion-button>
+      <ion-button expand="full" (click)="previousForm()">Previous</ion-button>
+    </ion-card>
+  </div>
+  <div>
+    <ion-card *ngIf="currentForm === 3" class="form-card">
+      <ion-card-header>
+        Interests and Preferences
+      </ion-card-header>
+      <ion-card-content class="form-card-content">
+        <ion-item class="form-item" >
+          <ion-icon slot="start" name="fast-food" class="pink-icon"></ion-icon>
+          <ion-select multiple="true" interface="popover" [(ngModel)]="selectedAfricanMealOptions" placeholder="Meal">
+            <ion-select-option class="form-input" *ngFor="let option of africanMealOptions" [value]="option">{{ option }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item class="form-item" >
+          <ion-icon slot="start" name="sunny-outline" class="pink-icon"></ion-icon>
+          <ion-select  multiple="true" interface="popover" [(ngModel)]="selectedLeisureOptions" placeholder="Leisures" >
+            <ion-select-option class="form-input" *ngFor="let option of leisureOptions" [value]="option">{{ option }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        
+        <ion-item class="form-item" >
+          <ion-icon slot="start" name="options" class="pink-icon"></ion-icon>
+          <ion-select multiple="true" interface="popover" [(ngModel)]="selectedPreferenceOptions" placeholder="Preferences">
+            <ion-select-option class="form-input" *ngFor="let option of preferenceOptions" [value]="option">{{ option }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-card-content>
+      <ion-button expand="full" (click)="nextForm()">Next</ion-button>
+      <ion-button expand="full" (click)="previousForm()">Previous</ion-button>
+    </ion-card>
+  </div>
+  <div>
+    <ion-card *ngIf="currentForm === 4" class="form-card">
+      <ion-card-header>
+        Dating Preferences
+      </ion-card-header>
+      <ion-card-content class="form-card-content">
+        <ion-item class="form-item" >
+          <ion-icon slot="start" name="transgender" class="pink-icon"></ion-icon>
+          <ion-select  multiple="true" interface="popover" [(ngModel)]="selectedSexualPreferences" placeholder="Enter your sexual Preferences">
+            <ion-select-option *ngFor="let preference of sexualPreferenceOptions" [value]="preference">{{ preference }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item class="form-item">
+          <ion-icon slot="start" name="calendar" class="pink-icon"></ion-icon>
+          <ion-select multiple="true" interface="popover" [(ngModel)]="selectedAgeRanges" placeholder="age range of the partners you want">
+            <ion-select-option *ngFor="let range of ageRangeOptions" [value]="range">{{ range }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-card-content>
+      <ion-button expand="full" (click)="nextForm()">Next</ion-button>
+      <ion-button expand="full" (click)="previousForm()">Previous</ion-button>
+    </ion-card>
+  <div>
+  <div>
+    <ion-card *ngIf="currentForm === 5" class="form-card">
+      <ion-card-header>
+        About You
+      </ion-card-header>
+      <ion-card-content class="form-card-content">
+        <ion-item class="form-item">
+          <ion-textarea class="form-input" [(ngModel)]="aboutYou" placeholder="Write something about you"></ion-textarea>
+        </ion-item>
+      </ion-card-content>
+      <ion-button expand="full" (click)="nextForm()">Next</ion-button>
+      <ion-button expand="full" (click)="previousForm()">Previous</ion-button>
+    </ion-card>
+  </div>
+  <div >
+    <ion-card *ngIf="currentForm === 6" class="form-card">
+      <ion-card-header>
+        Partner Expectations
+      </ion-card-header>
+      <ion-card-content class="form-card-content">
+        <ion-item class="form-item">
+          <ion-textarea class="form-input" [(ngModel)]="partnerExpectations" placeholder="What are you expecting from your partners?"></ion-textarea>
+        </ion-item>
+      </ion-card-content>
+      <ion-button expand="full" (click)="submitForm()">Submit</ion-button>
+      <ion-button expand="full" (click)="previousForm()">Previous</ion-button>
+    </ion-card>
+  </div>

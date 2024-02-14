@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
 import {  MenuController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
 
 
 
@@ -13,22 +14,20 @@ import {  MenuController } from '@ionic/angular';
   styleUrls: ['./edit-user.page.scss'],
 })
 export class EditUserPage implements OnInit {
+  canSave = true;
   userForm: FormGroup;
-  user: any = {};
-  username = "";
-  email = "";
-  // password = "";
-  // is_active=''
-  // is_superuser=''
+  user: any;
+  // is_active: any;
+  // is_superuser: any;
 
-  constructor(private menuCtrl: MenuController, private http: HttpClient, private modalController: ModalController, private formBuilder: FormBuilder,private router: Router) {
+  constructor(private authService: AuthService, private menuCtrl: MenuController, private http: HttpClient, private modalController: ModalController, private formBuilder: FormBuilder,private router: Router) {
     this.userForm = this.formBuilder.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      // password: ['', [Validators.required, Validators.minLength(6)]],
-      // is_active: [''], // Default to false
-      // is_superuser: [''], // Default to false
-      //  // ... other form controls
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      // is_active: [false], // Default to false
+      // is_superuser: [false], // Default to false
+       // ... other form controls
     });
    }
 
@@ -37,10 +36,11 @@ export class EditUserPage implements OnInit {
     this.userForm.patchValue({
       username: this.user.username,
       email: this.user.email,
-      // password: this.user.password,
+      password: this.user.password,
       // is_active: this.is_active,
       // is_superuser: this.is_superuser
     });
+    this.canSave = this.authService.getUserStatus(); 
 
   }
 
@@ -48,10 +48,12 @@ export class EditUserPage implements OnInit {
     
     const userData = this.userForm.value;
     // Perform the update operation using the API
-     this.http.put('https://dialarblack.pythonanywhere.com/users/' + userId+'/', userData)
+     this.http.put('https://dialarblack.pythonanywhere.com/users/' + userId + '/', userData)
       .subscribe({
         next: () => {
+          this.user=userData
           alert('User updated successfully.'); // Display success message
+
         },
         // error: (error: any) => {
         //   console.error('Error updating employee:', error); // Log the error response or message

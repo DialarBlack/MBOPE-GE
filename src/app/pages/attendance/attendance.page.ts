@@ -10,6 +10,7 @@ import { AddTaskPage } from '../add-task/add-task.page';
 import { EditAttendancePage } from '../edit-attendance/edit-attendance.page';
 import { AddAttendancePage } from '../add-attendance/add-attendance.page';
 import {  MenuController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
 
 interface Attendance {
   id: number;
@@ -46,7 +47,7 @@ export class AttendancePage implements OnInit {
 
 
 
-  constructor(private menuCtrl: MenuController, private modalController: ModalController, private router: Router, public alertController: AlertController,  public toastController: ToastController, private http: HttpClient) {
+  constructor(private authService: AuthService, private menuCtrl: MenuController, private modalController: ModalController, private router: Router, public alertController: AlertController,  public toastController: ToastController, private http: HttpClient) {
     this.http.get('https://dialarblack.pythonanywhere.com/attendance/').subscribe(response => {
       this.attendances = response
       this.filteredAttendances = this.attendances;

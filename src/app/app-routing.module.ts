@@ -105,6 +105,10 @@ const routes: Routes = [
     path: 'add-project',
     loadChildren: () => import('./pages/add-project/add-project.module').then( m => m.AddProjectPageModule)
   },
+  {
+    path: 'zamchat-registration',
+    loadChildren: () => import('./pages/zamchat-registration/zamchat-registration.module').then( m => m.ZamchatRegistrationPageModule)
+  },
 ];
 
 @NgModule({

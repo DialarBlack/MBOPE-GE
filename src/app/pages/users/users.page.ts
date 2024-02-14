@@ -8,6 +8,7 @@ import { firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EditUserPage } from '../edit-user/edit-user.page';
 import {  MenuController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
 
 
 interface User {
@@ -15,6 +16,8 @@ interface User {
   username: string;
   email: string;
   password: string;
+  // is_active: Boolean;
+  // is_superuser: Boolean;
 }
 
 @Component({
@@ -28,9 +31,10 @@ export class UsersPage implements OnInit {
   searchQuery = "";
   filteredUsers: any[]= [];
   showSuccessMessage: boolean = false;
+  canSave = true;
 
 
-  constructor(private menuCtrl: MenuController, private http: HttpClient, private modalController: ModalController, private router: Router, public alertController: AlertController,  public toastController: ToastController) { 
+  constructor(private authService: AuthService,private menuCtrl: MenuController, private http: HttpClient, private modalController: ModalController, private router: Router, public alertController: AlertController,  public toastController: ToastController) { 
     this.http.get('https://dialarblack.pythonanywhere.com/users/').subscribe(response => {
       this.users = response
       this.filteredUsers = this.users;
@@ -39,6 +43,7 @@ export class UsersPage implements OnInit {
 
   ngOnInit() {
     this.menuCtrl.enable(true);
+    this.canSave = this.authService.getUserStatus(); 
   }
   filterUsers() {
     const query = this.searchQuery.toLowerCase().trim();

@@ -1,13 +1,32 @@
-<ion-header [translucent]="true">
+<!-- <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>personal-information</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">personal-information</ion-title>
-    </ion-toolbar>
-  </ion-header>
-</ion-content>
+<ion-content>
+  <form [formGroup]="userForm" >
+    <ion-item>
+      <ion-label position="floating">Username</ion-label>
+      <ion-input formControlName="username" type="text" class="form-control" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="floating">Email</ion-label>
+      <ion-input formControlName="email" type="email" class="form-control" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label  position="floating">Password</ion-label>
+      <ion-input formControlName="password" type="password" class="form-control" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>Active</ion-label>
+      <ion-toggle formControlName="is_active" class="form-control" required></ion-toggle>
+    </ion-item>
+    <ion-item>
+      <ion-label>Superuser</ion-label>
+      <ion-toggle formControlName="is_superuser" class="form-control" required></ion-toggle>
+    </ion-item>
+    <ion-button [disabled]="!canSave" expand="full" type="submit" (click)="editUser(user.id)">Save</ion-button>
+  </form>
+  <ion-button expand="full" (click)="closeModal()">Close</ion-button>
+</ion-content> -->

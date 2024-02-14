@@ -13,7 +13,7 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class EditAttendancePage implements OnInit {
 
-  canSave: any;
+  canSave=true;
   attendanceForm:FormGroup;
   attendance: any = {};
   employees: any;

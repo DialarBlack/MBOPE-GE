@@ -28,7 +28,7 @@
       </ion-item>
       <ion-item>
         <ion-label position="floating">Project</ion-label>
-        <ion-select  formControlName="employee">
+        <ion-select  formControlName="project">
           <ion-select-option *ngFor="let project of projects" [value]="project.id">{{ project.title }}</ion-select-option>
         </ion-select>
       </ion-item>
